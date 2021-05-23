@@ -12,13 +12,65 @@ In order to start with this collection, please follow these steps:
 4. Once imported, open the `Salesforce Omni Channel Inventory` environment, and modify all the data which contain placeholders (like `<YOUR-CLIENT-ID-HERE>`) with your details. Please **don't modify the values with `{{` and `}}`, as these values are calculated values within your POSTMAN environment.**
 5. Once the environment is setup, open the `Salesforce Omni Channel Inventory` collection, and start using it.
 
+## :gear: Where do I find these setup values?
+
+### client_id and client_password
+
+The `client_id` environment variable is the Client ID generated within the Salesforce B2C Account Manager. The `client_password` is the password tied to the client ID.
+In order to generate it, please do the following steps:
+1. Go to https://account.demandware.com
+2. Go to the `API Client` menu
+3. Click on the `Add API Client` button
+4. Fill out a Display Name and a Password. The password you enter here corresponds to the `client_password` environment variable.
+5. As roles, please select the `Salesforce Commerce API` role on the Salesforce B2C Commerce instance you want to test OCI against with.
+6. In the OpenID allowed scopes, add the Omnichannel Inventory scopes. The complete list is available [here](https://developer.commercecloud.com/s/article/CommerceAPI-AuthZ-Scope-Catalog).
+7. Select `client_secret_post` as Token Endpoint Auth Method.
+8. Select `JWT` as Access Token Format
+9. Click on save.
+10. Once saved, the client ID is generated, please us this value for the `client_id` environment variable.
+
+### short_code
+
+The `short_code` environment variable is the Salesforce Commerce API short code tied to your realm. This value is available in the Business Manager of the instance on which you want to run Omnichannel Inventory.
+In order to find the value, please do the following steps:
+1. Go to the Business Manager of the instance
+2. Go to the `Administration >  Site Development >  Salesforce Commerce API Settings` menu.
+3. On the page, you'll see the `Short code` label.
+4. If a `Request short code` button is present, this means no short code has been assigned to the realm yet. Please click on the button and wait until the short code is created.
+5. If you can directly see the short code value on the page, then use it as the `short_code` environment variable.
+
+### tenant_group_id
+
+The `tenant_group_id` environment variable is the Salesforce Tenant group ID that is tied to your Salesforce Core org and your Omnichannel Inventory instance.
+In order to find that value, please do the following steps:
+1. Go to your Salesforce Core org.
+2. Click on the gear icon on the top left and go to the `Setup` menu
+3. Ensure that the `Omnichannel Inventory` toggle is `on` within the `Omnichannel Inventory` menu of the setup (use the Quick Find box to access to it.)
+4. If the setting is on, on the same page you'll find the `Tenant Group ID`, please use this value for the `tenant_group_id` environment variable.
+5. If the setting is off, please switch it on, then reload the page, you'll see the `Tenant Group ID` value.
+
+### realm_id
+
+The `realm_id` corresponds to the 4 letters realm identifier of your realm. This ID is provided by the Salesforce B2C support when initializing the realm. Please us this value for the `realm_id` environment variable.
+This value is also the first part of the On-demand sandboxes hostnames.
+For example, if the sandbox hostname is `aaaa-001.sandbox.us01.dx.commercecloud.salesforce.com`, the `realm_id` is `aaaa`.
+
+### instance_id
+
+The `instance_id` corresponds to the name of the instance.
+For On-demand sandboxes, it is the number after the realm ID.
+For example, if the sandbox hostname is `aaaa-001.sandbox.us01.dx.commercecloud.salesforce.com`, the `instance_id` environment variable is `001`.
+For regular sandboxes and PIG instances, use the first part of the hostname as identifier.
+For example, for a staging instance where the hostname is `http://staging-podname-client.demandware.net`, please use `staging` as the `instance_id` environment variable.
+For example, for a regular sandbox instance where the hostname is `http://dev01-podname-client.demandware.net`, please use `dev01` as the `instance_id` environment variable.
+
 ## :information_source: Description
 
 This collection contains use-case based sub-collections. The collection is divided into three main components, `AVAILABILITY`, `IMPEX`, and `RESERVATIONS`, in order to reflect how the documentation on the [Salesforce Commerce Cloud Developer Center](https://developer.commercecloud.com/s/commerce-api-apis) is done.
 
 Within these folders, you'll find a sub-collection per use case, which contains the list of endpoints which can be used to perform the desired operation and validate that the operation worked.
 
-![POSTMAN Collections screenshot](https://github.com/jbachelet/sf-oci-postman-collection/blob/master/POSTMAN-Collection-Overview.png "POSTMAN Collections screenshot")
+![POSTMAN Collections screenshot](imgs/POSTMAN-Collection-Overview.png "POSTMAN Collections screenshot")
 
 All endpoints contain unit tests, which allows the collection to ensure:
 
@@ -32,9 +84,9 @@ You can leverage this collection in differente ways:
 
 :arrow_forward: By using any endpoint one-by-one. Please remember to always authenticate first, by using any of the authentication endpoint available within the use-case collections.
 
-![POSTMAN One Endpoint Sample screenshot](https://github.com/jbachelet/sf-oci-postman-collection/blob/master/POSTMAN-Sample.png "POSTMAN One Endpoint Sample screenshot")
+![POSTMAN One Endpoint Sample screenshot](imgs/POSTMAN-Sample.png "POSTMAN One Endpoint Sample screenshot")
 
 :next_track_button: By using the [POSTMAN Runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs), which will run a full use-case directly, by executing each endpoint one-by-one, sequentially, and so report the unit tests results for each executed endpoint.
 :warning: **When running a use-case, please put a minimum of 1000ms delay between each endpoint execution, as I've seen some unit-tests not passing when a request was executed to quickly after another. I guess this is due to some sort of cache within the Salesforce Omni Channel Inventory system in my sandbox environment**.
 
-![POSTMAN Runner Sample screenshot](https://github.com/jbachelet/sf-oci-postman-collection/blob/master/POSTMAN-Runner-Sample.gif "POSTMAN Runner Sample screenshot")
+![POSTMAN Runner Sample screenshot](imgs/POSTMAN-Runner-Sample.gif "POSTMAN Runner Sample screenshot")
