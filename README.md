@@ -61,7 +61,7 @@ The `instance_id` corresponds to the name of the instance.
 For On-demand sandboxes, it is the number after the realm ID.
 For example, if the sandbox hostname is `aaaa-001.sandbox.us01.dx.commercecloud.salesforce.com`, the `instance_id` environment variable is `001`.
 For regular sandboxes and PIG instances, use the first part of the hostname as identifier.
-For example, for a staging instance where the hostname is `http://staging-podname-client.demandware.net`, please use `staging` as the `instance_id` environment variable.
+For example, for a staging instance where the hostname is `http://staging-podname-client.demandware.net`, please use `stg` as the `instance_id` environment variable (you can use `dev` for `development` and `prd` for `production`).
 For example, for a regular sandbox instance where the hostname is `http://dev01-podname-client.demandware.net`, please use `dev01` as the `instance_id` environment variable.
 
 ## :information_source: Description
