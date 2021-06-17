@@ -14,6 +14,8 @@ In order to start with this collection, please follow these steps:
 
 ## :gear: Where do I find these setup values?
 
+**Please note the official documentation for the Salesforce Commerce APIs environment variables is available [here](https://developer.commercecloud.com/s/article/CommerceAPI-ConfigurationValues).**
+
 ### client_id and client_password
 
 The `client_id` environment variable is the Client ID generated within the Salesforce B2C Account Manager. The `client_password` is the password tied to the client ID.
@@ -62,7 +64,7 @@ For On-demand sandboxes, it is the number after the realm ID.
 For example, if the sandbox hostname is `aaaa-001.sandbox.us01.dx.commercecloud.salesforce.com`, the `instance_id` environment variable is `001`.
 For regular sandboxes and PIG instances, use the first part of the hostname as identifier.
 For example, for a staging instance where the hostname is `http://staging-podname-client.demandware.net`, please use `stg` as the `instance_id` environment variable (you can use `dev` for `development` and `prd` for `production`).
-For example, for a regular sandbox instance where the hostname is `http://dev01-podname-client.demandware.net`, please use `dev01` as the `instance_id` environment variable.
+For example, for a regular sandbox instance where the hostname is `http://dev01-podname-client.demandware.net`, please use `s01` as the `instance_id` environment variable.
 
 ## :information_source: Description
 
