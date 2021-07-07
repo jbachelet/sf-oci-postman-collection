@@ -82,6 +82,31 @@ All endpoints contain unit tests, which allows the collection to ensure:
 
 ## :rocket: How to?
 
+### How to generate the file to be used in the IMPEX > Import Inventory Records use case?
+
+In order to send the file containing the records, you need to GZIP it, then get the hash of the file to provide it in the API calls of the use case.
+
+#### GZIP the file through bash
+
+In order to GZIP the file, you can use the following command in bash:
+
+```bash
+gzip <path/to/file.json>
+```
+
+This will generate a GZIP archive of the given file.
+#### Get the hash of the file through bash
+
+In order to get the has of the file, you can use the following command in bash:
+
+```bash
+openssl dgst -sha256 <path/to/file.json>
+```
+
+This will give you a hash of the file that you need to use in the `impex_file_hash` environement variable.
+
+### How to use the collection?
+
 You can leverage this collection in differente ways:
 
 :arrow_forward: By using any endpoint one-by-one. Please remember to always authenticate first, by using any of the authentication endpoint available within the use-case collections.
