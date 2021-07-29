@@ -29,7 +29,7 @@ In order to generate it, please do the following steps:
 7. Select `client_secret_post` as Token Endpoint Auth Method.
 8. Select `JWT` as Access Token Format
 9. Click on save.
-10. Once saved, the client ID is generated, please us this value for the `client_id` environment variable.
+10. Once saved, the client ID is generated, please use this value for the `client_id` environment variable.
 
 ### short_code
 
@@ -53,9 +53,14 @@ In order to find that value, please do the following steps:
 
 ### realm_id
 
-The `realm_id` corresponds to the 4 letters realm identifier of your realm. This ID is provided by the Salesforce B2C support when initializing the realm. Please us this value for the `realm_id` environment variable.
+The `realm_id` corresponds to the 4 letters realm identifier of your realm. This ID is provided by the Salesforce B2C support team when initializing the realm. Please us this value for the `realm_id` environment variable.
 This value is also the first part of the On-demand sandboxes hostnames.
 For example, if the sandbox hostname is `aaaa-001.sandbox.us01.dx.commercecloud.salesforce.com`, the `realm_id` is `aaaa`.
+Also, another way to find this `realm_id` is to extract it from the Salesforce Commerce APIs Organization ID. In order to find it, you can do the following:
+1. Go to the Business Manager of the instance
+2. Go to the `Administration >  Site Development >  Salesforce Commerce API Settings` menu.
+3. On the page, you'll see the `Organization ID` label.
+4. This organization ID is composed of `f_ecom_{realm_id}_{instance_id}`. You can use the `realm_id` piece of this value in your environment variable.
 
 ### instance_id
 
@@ -65,6 +70,11 @@ For example, if the sandbox hostname is `aaaa-001.sandbox.us01.dx.commercecloud.
 For regular sandboxes and PIG instances, use the first part of the hostname as identifier.
 For example, for a staging instance where the hostname is `http://staging-podname-client.demandware.net`, please use `stg` as the `instance_id` environment variable (you can use `dev` for `development` and `prd` for `production`).
 For example, for a regular sandbox instance where the hostname is `http://dev01-podname-client.demandware.net`, please use `s01` as the `instance_id` environment variable.
+Also, another way to find this `instance_id` is to extract it from the Salesforce Commerce APIs Organization ID. In order to find it, you can do the following:
+1. Go to the Business Manager of the instance
+2. Go to the `Administration >  Site Development >  Salesforce Commerce API Settings` menu.
+3. On the page, you'll see the `Organization ID` label.
+4. This organization ID is composed of `f_ecom_{realm_id}_{instance_id}`. You can use the `instance_id` piece of this value in your environment variable.
 
 ## :information_source: Description
 
