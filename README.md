@@ -9,7 +9,7 @@ In order to start with this collection, please follow these steps:
 1. Download POSTMAN from the [official website](https://www.postman.com/downloads/) and installed it
 2. Once installed, open POSTMAN
 3. Once opened, import the collection and the environment from this repository to your POSTMAN workspace
-4. Once imported, open the `Salesforce Omni Channel Inventory` environment, and modify all the data which contain placeholders (like `<YOUR-CLIENT-ID-HERE>`) with your details. Please **don't modify the values with `{{` and `}}`, as these values are calculated values within your POSTMAN environment.**
+4. Once imported, open the `Salesforce Omni Channel Inventory` environment, and modify all the data which contain placeholders (like `<YOUR-CLIENT-ID-HERE>`) with your details. Please **don't modify the values with `{{` and `}}`, as these values are calculated values within your POSTMAN environment.**. The environment also contains sample values that you can use, or modify, as per your needs.
 5. Once the environment is setup, open the `Salesforce Omni Channel Inventory` collection, and start using it.
 
 ## :gear: Where do I find these setup values?
@@ -120,6 +120,8 @@ This will give you a hash of the file that you need to use in the `impex_file_ha
 You can leverage this collection in differente ways:
 
 :arrow_forward: By using any endpoint one-by-one. Please remember to always authenticate first, by using any of the authentication endpoint available within the use-case collections.
+
+:arrow_forward: Note that all API calls anotated with `(Optional)` are not required in a production use. These calls are there to show and test that the API works as expected.
 
 ![POSTMAN One Endpoint Sample screenshot](imgs/POSTMAN-Sample.png "POSTMAN One Endpoint Sample screenshot")
 

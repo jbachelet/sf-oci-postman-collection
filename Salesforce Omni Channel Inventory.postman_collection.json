@@ -1235,7 +1235,7 @@
 							"response": []
 						},
 						{
-							"name": "Import Availability Records - Get Imports List before starting the import",
+							"name": "(Optional) Import Availability Records - Get Imports List before starting the import",
 							"event": [
 								{
 									"listen": "test",
@@ -1434,7 +1434,7 @@
 							"response": []
 						},
 						{
-							"name": "Import Availability Records - Get Import Stattus",
+							"name": "(Optional) Import Availability Records - Get Import Status",
 							"event": [
 								{
 									"listen": "test",
@@ -1506,7 +1506,7 @@
 							"response": []
 						},
 						{
-							"name": "Import Availability Records - Get Imports List after the import has been proceed",
+							"name": "(Optional) Import Availability Records - Get Imports List after the import has been proceed",
 							"event": [
 								{
 									"listen": "test",
@@ -1729,7 +1729,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability By Locations for the product we will update",
+							"name": "(Optional) Get Availability By Locations for the product we will update",
 							"event": [
 								{
 									"listen": "test",
@@ -1904,7 +1904,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability By Locations for the updated product",
+							"name": "(Optional) Get Availability By Locations for the updated product",
 							"event": [
 								{
 									"listen": "test",
@@ -2109,7 +2109,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability By Locations for the product we will update",
+							"name": "(Optional) Get Availability By Locations for the product we will update",
 							"event": [
 								{
 									"listen": "test",
@@ -2288,7 +2288,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability By Locations for the updated product",
+							"name": "(Optional) Get Availability By Locations for the updated product",
 							"event": [
 								{
 									"listen": "test",
@@ -2493,7 +2493,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability By Locations for the product we will update",
+							"name": "(Optional) Get Availability By Locations for the product we will update",
 							"event": [
 								{
 									"listen": "test",
@@ -2672,7 +2672,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability By Locations for the updated product",
+							"name": "(Optional) Get Availability By Locations for the updated product",
 							"event": [
 								{
 									"listen": "test",
@@ -3433,7 +3433,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group before the reservation",
+							"name": "(Optional) Get Availability of the location group before the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -3625,7 +3625,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group after the reservation",
+							"name": "(Optional) Get Availability of the location group after the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -3649,6 +3649,7 @@
 											"    const group = data.groups.filter(group => group.id === pm.environment.get('location_group_id'))[0];",
 											"    pm.expect(group).to.exist;",
 											"    pm.expect(group).to.be.an('object');",
+											"    pm.expect(group.id).to.not.be.empty;",
 											"",
 											"    // Confirm that the reservation has changed the inventory values",
 											"    pm.expect(group.records[0].atf).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_atf'), 10) - 1);",
@@ -3728,6 +3729,7 @@
 									"script": {
 										"exec": [
 											"pm.collectionVariables.set('_transfer_unique_request_id', uuidv4());",
+											"pm.collectionVariables.set('_reservation_id', uuidv4());",
 											"",
 											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
 											"function uuidv4() {",
@@ -3780,7 +3782,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group after the transfer",
+							"name": "(Optional) Get Availability of the location group after the transfer",
 							"event": [
 								{
 									"listen": "test",
@@ -3943,7 +3945,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location after the fulfillment",
+							"name": "(Optional) Get Availability of the location after the fulfillment",
 							"event": [
 								{
 									"listen": "test",
@@ -4144,7 +4146,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group before the reservation",
+							"name": "(Optional) Get Availability of the location group before the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -4324,7 +4326,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group after the reservation",
+							"name": "(Optional) Get Availability of the location group after the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -4480,7 +4482,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group after the release",
+							"name": "(Optional) Get Availability of the location group after the release",
 							"event": [
 								{
 									"listen": "test",
@@ -4678,7 +4680,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group before the reservation",
+							"name": "(Optional) Get Availability of the location group before the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -4858,7 +4860,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group after the reservation",
+							"name": "(Optional) Get Availability of the location group after the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -5007,7 +5009,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location group after the cancellation",
+							"name": "(Optional) Get Availability of the location group after the cancellation",
 							"event": [
 								{
 									"listen": "test",
@@ -5205,7 +5207,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location before the reservation",
+							"name": "(Optional) Get Availability of the location before the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -5385,7 +5387,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location after the reservation",
+							"name": "(Optional) Get Availability of the location after the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -5542,7 +5544,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location after the fulfillment",
+							"name": "(Optional) Get Availability of the location after the fulfillment",
 							"event": [
 								{
 									"listen": "test",
@@ -5740,7 +5742,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location before the reservation",
+							"name": "(Optional) Get Availability of the location before the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -5920,7 +5922,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location after the reservation",
+							"name": "(Optional) Get Availability of the location after the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -6076,7 +6078,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location after the release",
+							"name": "(Optional) Get Availability of the location after the release",
 							"event": [
 								{
 									"listen": "test",
@@ -6274,7 +6276,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location before the reservation",
+							"name": "(Optional) Get Availability of the location before the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -6454,7 +6456,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location after the reservation",
+							"name": "(Optional) Get Availability of the location after the reservation",
 							"event": [
 								{
 									"listen": "test",
@@ -6603,7 +6605,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Availability of the location after the cancellation",
+							"name": "(Optional) Get Availability of the location after the cancellation",
 							"event": [
 								{
 									"listen": "test",
