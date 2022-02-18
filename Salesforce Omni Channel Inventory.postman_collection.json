@@ -1434,7 +1434,7 @@
 							"response": []
 						},
 						{
-							"name": "(Optional) Import Availability Records - Get Import Status",
+							"name": "Import Availability Records - Get Import Status",
 							"event": [
 								{
 									"listen": "test",
@@ -1569,7 +1569,7 @@
 							"response": []
 						},
 						{
-							"name": "Import Availability Records - Get Import Report",
+							"name": "(Optional) Import Availability Records - Get Import Report",
 							"event": [
 								{
 									"listen": "test",
