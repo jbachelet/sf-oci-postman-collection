@@ -1,6 +1,6 @@
 # Salesforce OCI - Commerce API POSTMAN Collection
 
-This repository contains a sample POSTMAN collection that you can leverage to understand how the Salesforce Omni Channel Inventory endpoints are working using the Commerce API, and can be used to operate with your Salesforce Omni Channel Inventory instance.
+This folder contains a sample POSTMAN collection that you can leverage to understand how the Salesforce Omni Channel Inventory endpoints are working using the Commerce API, and can be used to operate with your Salesforce Omni Channel Inventory instance.
 
 ## :gear: Get started
 
