@@ -1,0 +1,3289 @@
+{
+	"info": {
+		"_postman_id": "d5392228-f018-41f0-85fa-2b725abc0d62",
+		"name": "Salesforce OCI - Core Platform APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "IMPEX",
+			"item": [
+				{
+					"name": "Commit Location Graph to Omnichannel Inventory",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Commit Location Graph to Omnichannel Inventory",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the response and saves the Upload Id in the collection variables', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"    pm.expect(data.uploadId).to.exist;",
+											"    pm.expect(data.uploadId).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_location_graph_upload_id', data.uploadId);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/location-graph/uploads",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"location-graph",
+										"uploads"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Check Location Graph Upload",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the response', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.status).to.exist;",
+											"    pm.expect(data.status).to.be.a.string;",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/location-graph/uploads/{{_location_graph_upload_id}}",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"location-graph",
+										"uploads",
+										"{{_location_graph_upload_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Import Inventory Records",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import Availability Records file",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the response and saves the Upload Id in the collection variables', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"    pm.expect(data.uploadId).to.exist;",
+											"    pm.expect(data.uploadId).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_inventory_records_upload_id', data.uploadId);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "fileUpload",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/location-graph/uploads",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"location-graph",
+										"uploads"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inventory Availability Records - Check Import Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the response', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.status).to.exist;",
+											"    pm.expect(data.status).to.be.a.string;",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/location-graph/uploads/{{_inventory_records_upload_id}}",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"location-graph",
+										"uploads",
+										"{{_inventory_records_upload_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "AVAILABILITY",
+			"item": [
+				{
+					"name": "Get Availability records by location group",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Availability by Location Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    const inventoryRecord = locationGroup.inventoryRecords[0];",
+											"    pm.expect(inventoryRecord.stockKeepingUnit).to.exist;",
+											"    pm.expect(inventoryRecord.stockKeepingUnit).to.be.equal(pm.environment.get('product_sku'));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Availability records by location",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Availability by Location",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.be.empty;",
+											"    pm.expect(data.locations).to.exist;",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    const inventoryRecord = location.inventoryRecords[0];",
+											"    pm.expect(inventoryRecord.stockKeepingUnit).to.exist;",
+											"    pm.expect(inventoryRecord.stockKeepingUnit).to.be.equal(pm.environment.get('product_sku'));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "RESERVATIONS",
+			"item": [
+				{
+					"name": "Create reservation against location group, transfer it and fulfill it",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location group before the reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.not.be.empty;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    const inventoryRecord = locationGroup.inventoryRecords[0];",
+											"",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_atf', inventoryRecord.availableToFulfill);",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_ato', inventoryRecord.availableToOrder);",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_reserved', inventoryRecord.reserved);",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_onHand', inventoryRecord.onHand);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_atf');",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_ato');",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_reserved');",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_onHand');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create reservation against location group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_reservation_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"actionRequestId\": \"{{_reservation_unique_id}}\",\n    \"createRecords\": [{\n        \"locationGroupIdentifier\": \"{{location_group_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }],\n    \"externalRefId\": \"{{reservation_external_reference_id}}\"\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/reservations",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"reservations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location group after the reservation, and location before transfer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.not.be.empty;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    var inventoryRecord = locationGroup.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_reserved'), 10) + 1);",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    pm.collectionVariables.set('_location_availability_before_transfer_atf', inventoryRecord.availableToFulfill);",
+											"    pm.collectionVariables.set('_location_availability_before_transfer_ato', inventoryRecord.availableToOrder);",
+											"    pm.collectionVariables.set('_location_availability_before_transfer_reserved', inventoryRecord.reserved);",
+											"    pm.collectionVariables.set('_location_availability_before_transfer_onHand', inventoryRecord.onHand);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Transfer reservation from group to location",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_transfer_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"transferRecords\": [{\n        \"actionRequestId\": \"{{_transfer_unique_id}}\",\n        \"externalRefId\": \"{{transfer_external_reference_id}}\",\n        \"fromLocationGroupIdentifier\": \"{{location_group_id}}\",\n        \"toLocationIdentifier\": \"{{location_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }]\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/transfers",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"transfers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location group and location after transfer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.not.be.empty;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    var inventoryRecord = locationGroup.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_reserved'), 10) + 1);",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_transfer_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_transfer_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_transfer_reserved'), 10) + 1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fulfill reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_fulfillment_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fulfillmentRecords\": [{\n        \"actionRequestId\": \"{{_fulfillment_unique_id}}\",\n        \"externalRefId\": \"{{fulfillment_external_reference_id}}\",\n        \"locationIdentifier\": \"{{location_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }]\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/fulfillments",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"fulfillments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location group and location after fulfillment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.not.be.empty;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    var inventoryRecord = locationGroup.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_reserved'), 10));",
+											"    pm.expect(inventoryRecord.onHand).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_onHand'), 10) - 1);",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_transfer_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_transfer_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_transfer_reserved'), 10));",
+											"    pm.expect(inventoryRecord.onHand).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_transfer_onHand'), 10) - 1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create reservation against location group and release it",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location group before the reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.not.be.empty;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    const inventoryRecord = locationGroup.inventoryRecords[0];",
+											"",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_atf', inventoryRecord.availableToFulfill);",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_ato', inventoryRecord.availableToOrder);",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_reserved', inventoryRecord.reserved);",
+											"    pm.collectionVariables.set('_location_group_availability_before_reservation_onHand', inventoryRecord.onHand);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_atf');",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_ato');",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_reserved');",
+											"pm.collectionVariables.unset('_location_group_availability_before_reservation_onHand');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create reservation against location group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_reservation_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"actionRequestId\": \"{{_reservation_unique_id}}\",\n    \"createRecords\": [{\n        \"locationGroupIdentifier\": \"{{location_group_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }],\n    \"externalRefId\": \"{{reservation_external_reference_id}}\"\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/reservations",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"reservations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location group after the reservation and before release",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.not.be.empty;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    const inventoryRecord = locationGroup.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_reserved'), 10) + 1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Release reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_release_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"releaseRecords\": [{\n        \"actionRequestId\": \"{{_release_unique_id}}\",\n        \"externalRefId\": \"{{release_external_reference_id}}\",\n        \"locationGroupIdentifier\": \"{{location_group_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }]\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/releases",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"releases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location group after release",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.not.be.empty;",
+											"",
+											"    const locationGroup = data.locationGroups[0];",
+											"    pm.expect(locationGroup.inventoryRecords).to.exist;",
+											"    pm.expect(locationGroup.inventoryRecords).to.be.an('array');",
+											"    pm.expect(locationGroup.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(locationGroup.locationGroupIdentifier).to.be.equal(pm.environment.get('location_group_id'));",
+											"",
+											"    const inventoryRecord = locationGroup.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_atf'), 10));",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_ato'), 10));",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_reserved'), 10));",
+											"    pm.expect(inventoryRecord.onHand).to.be.eq(parseInt(pm.collectionVariables.get('_location_group_availability_before_reservation_onHand'), 10));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationGroupIdentifiers\": [\"{{location_group_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create reservation against location and fulfill it",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location before the reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.be.empty;",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    const inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_atf', inventoryRecord.availableToFulfill);",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_ato', inventoryRecord.availableToOrder);",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_reserved', inventoryRecord.reserved);",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_onHand', inventoryRecord.onHand);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_atf');",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_ato');",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_reserved');",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_onHand');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create reservation against location",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_reservation_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"actionRequestId\": \"{{_reservation_unique_id}}\",\n    \"createRecords\": [{\n        \"locationIdentifier\": \"{{location_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }],\n    \"externalRefId\": \"{{reservation_external_reference_id}}\"\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/reservations",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"reservations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location after the reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.be.empty;",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    const inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_reserved'), 10) + 1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fulfill reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_fulfillment_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fulfillmentRecords\": [{\n        \"actionRequestId\": \"{{_fulfillment_unique_id}}\",\n        \"externalRefId\": \"{{fulfillment_external_reference_id}}\",\n        \"locationIdentifier\": \"{{location_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }]\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/fulfillments",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"fulfillments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location after fulfillment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.be.empty;",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_reserved'), 10));",
+											"    pm.expect(inventoryRecord.onHand).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_onHand'), 10) - 1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create reservation against location and release it",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"    const id = data.id.split('/');",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"    pm.collectionVariables.set('_instance_url', data.instance_url);",
+											"    pm.collectionVariables.set('_user_id', id.pop());",
+											"    pm.collectionVariables.set('_org_id', id.pop());",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}{{security_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/services/oauth2/token",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location before the reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.be.empty;",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    const inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_atf', inventoryRecord.availableToFulfill);",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_ato', inventoryRecord.availableToOrder);",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_reserved', inventoryRecord.reserved);",
+											"    pm.collectionVariables.set('_location_availability_before_reservation_onHand', inventoryRecord.onHand);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_atf');",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_ato');",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_reserved');",
+											"pm.collectionVariables.unset('_location_availability_before_reservation_onHand');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create reservation against location",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_reservation_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"actionRequestId\": \"{{_reservation_unique_id}}\",\n    \"createRecords\": [{\n        \"locationIdentifier\": \"{{location_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }],\n    \"externalRefId\": \"{{reservation_external_reference_id}}\"\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/reservations",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"reservations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location after the reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.be.empty;",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    const inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_atf'), 10) - 1);",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_ato'), 10) - 1);",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_reserved'), 10) + 1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Release reservation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.errors).to.exist;",
+											"    pm.expect(data.errors).to.be.an('array');",
+											"    pm.expect(data.errors.length).to.be.equal(0);",
+											"    pm.expect(data.success).to.exist;",
+											"    pm.expect(data.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_release_unique_id', uuidv4());",
+											"",
+											"// Generates a valid UUID v4 as per RFC4122: https://www.ietf.org/rfc/rfc4122.txt",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"releaseRecords\": [{\n        \"actionRequestId\": \"{{_release_unique_id}}\",\n        \"externalRefId\": \"{{release_external_reference_id}}\",\n        \"locationIdentifier\": \"{{location_id}}\",\n        \"quantity\": 1,\n        \"stockKeepingUnit\": \"{{product_sku}}\"\n    }]\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/reservation/actions/releases",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"reservation",
+										"actions",
+										"releases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability of the location after release",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.success;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations).to.not.be.empty;",
+											"    pm.expect(data.locationGroups).to.exist;",
+											"    pm.expect(data.locationGroups).to.be.an('array');",
+											"    pm.expect(data.locationGroups).to.be.empty;",
+											"",
+											"    const location = data.locations[0];",
+											"    pm.expect(location.inventoryRecords).to.exist;",
+											"    pm.expect(location.inventoryRecords).to.be.an('array');",
+											"    pm.expect(location.inventoryRecords).to.not.be.empty;",
+											"    pm.expect(location.locationIdentifier).to.be.equal(pm.environment.get('location_id'));",
+											"",
+											"    const inventoryRecord = location.inventoryRecords[0];",
+											"",
+											"    // Confirm that the reservation has changed the inventory values",
+											"    pm.expect(inventoryRecord.availableToFulfill).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_atf'), 10));",
+											"    pm.expect(inventoryRecord.availableToOrder).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_ato'), 10));",
+											"    pm.expect(inventoryRecord.reserved).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_reserved'), 10));",
+											"    pm.expect(inventoryRecord.onHand).to.be.eq(parseInt(pm.collectionVariables.get('_location_availability_before_reservation_onHand'), 10));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdentifiers\": [\"{{location_id}}\"],\n    \"stockKeepingUnits\": [\"{{product_sku}}\"],\n    \"useCache\": {{use_cache}}\n}"
+								},
+								"url": {
+									"raw": "{{_instance_url}}/services/data/v{{version}}/commerce/oci/availability/availability-records/actions/get-availability",
+									"host": [
+										"{{_instance_url}}"
+									],
+									"path": [
+										"services",
+										"data",
+										"v{{version}}",
+										"commerce",
+										"oci",
+										"availability",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
