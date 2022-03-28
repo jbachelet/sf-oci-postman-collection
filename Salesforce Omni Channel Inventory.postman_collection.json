@@ -1569,7 +1569,7 @@
 							"response": []
 						},
 						{
-							"name": "(Optional) Import Availability Records - Get Import Report",
+							"name": "Import Availability Records - Get Import Report",
 							"event": [
 								{
 									"listen": "test",
@@ -4462,7 +4462,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"externalRefId\": \"{{release_external_reference_id}}\",\n    \"records\": [{\n        \"uniqueRequestId\": \"{{_release_unique_request_id}}\",\n        \"id\": \"{{_reservation_id}}\",\n        \"group\": \"{{location_group_id}}\",\n        \"sku\": \"{{product_sku}}\",\n        \"quantity\": 1\n    }]\n}"
+									"raw": "{\n    \"records\": [{\n        \"id\": \"{{_release_unique_request_id}}\",\n        \"externalRefId\": \"{{release_external_reference_id}}\",\n        \"group\": \"{{location_group_id}}\",\n        \"sku\": \"{{product_sku}}\",\n        \"quantity\": 1\n    }]\n}"
 								},
 								"url": {
 									"raw": "{{api_url}}/inventory/reservation/{{api_version}}/organizations/{{tenant_group_id}}/releases",
@@ -6058,7 +6058,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"externalRefId\": \"{{release_external_reference_id}}\",\n    \"records\": [{\n        \"uniqueRequestId\": \"{{_release_unique_request_id}}\",\n        \"id\": \"{{_reservation_id}}\",\n        \"location\": \"{{location_id}}\",\n        \"sku\": \"{{product_sku}}\",\n        \"quantity\": 1\n    }]\n}"
+									"raw": "{\n    \"records\": [{\n        \"id\": \"{{_release_unique_request_id}}\",\n        \"externalRefId\": \"{{release_external_reference_id}}\",\n        \"location\": \"{{location_id}}\",\n        \"sku\": \"{{product_sku}}\",\n        \"quantity\": 1\n    }]\n}"
 								},
 								"url": {
 									"raw": "{{api_url}}/inventory/reservation/{{api_version}}/organizations/{{tenant_group_id}}/releases",
