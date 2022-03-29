@@ -1612,6 +1612,333 @@
 						}
 					],
 					"description": "# IMPEX - Import Inventory Records\n\n> Please allow some delays from the time you upload the file and the time the import is completed, depending on the number of records to import.\n\nThis collection contains the endpoints that allow you to import the availability records within Salesforce OCI."
+				},
+				{
+					"name": "Export event logs",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce Commerce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "{{client_id}}",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "{{client_password}}",
+											"type": "string"
+										},
+										{
+											"key": "saveHelperData",
+											"value": true,
+											"type": "boolean"
+										},
+										{
+											"key": "showPassword",
+											"value": true,
+											"type": "boolean"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "{{api_scopes}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://account.demandware.com/dw/oauth2/access_token",
+									"protocol": "https",
+									"host": [
+										"account",
+										"demandware",
+										"com"
+									],
+									"path": [
+										"dw",
+										"oauth2",
+										"access_token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export Event Logs - Submit Export",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body and save the values to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.exportStatusLink).to.exist;",
+											"    pm.expect(data.exportStatusLink).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_export_event_log_status_link', data.exportStatusLink);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_export_event_log_status_link');",
+											"",
+											"// Compute export dates (last month of activity)",
+											"const start = new Date();",
+											"start.setMonth(start.getMonth() - 1);",
+											"",
+											"pm.collectionVariables.set('_event_log_export_end', new Date().toISOString());",
+											"pm.collectionVariables.set('_event_log_export_start', start.toISOString());"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"endsOn\": \"{{_event_log_export_end}}\",\n    \"locations\": [\n        \"{{location_id}}\"\n    ],\n    \"sku\": \"{{product_sku}}\",\n    \"groups\": [\n        \"{{location_group_id}}\"\n    ],\n    \"startsOn\": \"{{_event_log_export_start}}\"\n}"
+								},
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/event-log/exports",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"event-log",
+										"exports"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export Event Logs - Get Export Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body and save the values to the variables', () => {",
+											"    const data = pm.response.json();",
+											"",
+											"    pm.expect(data.status).to.exist;",
+											"    pm.expect(data.status).to.be.a.string;",
+											"    pm.expect(data.download).to.exist;",
+											"    pm.expect(data.download).to.be.a('object');",
+											"    pm.expect(data.download.downloadLink).to.exist;",
+											"    pm.expect(data.download.downloadLink).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_export_event_log_activity_link', data.download.downloadLink);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_export_event_log_activity_link');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/{{_export_event_log_status_link}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"{{_export_event_log_status_link}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export Event Logs - Download activity logs",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/{{_export_event_log_activity_link}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"{{_export_event_log_activity_link}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			],
 			"description": "# Salesforce Omni Channel Inventory\n\n## Impex\n\nThis collection contains use cases related to the inventory import/export operations.\n\nMore infos [Salesforce Commerce Developer Center](https://developer.commercecloud.com/s/api-details/a003k00000Wa43kAAB/commerce-cloud-developer-centerinventoryimpex)"
@@ -6718,5 +7045,5 @@
 				]
 			}
 		}
-	],
+	]
 }
