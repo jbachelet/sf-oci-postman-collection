@@ -25,7 +25,7 @@ In order to generate it, please do the following steps:
 3. Click on the `Add API Client` button
 4. Fill out a Display Name and a Password. The password you enter here corresponds to the `client_password` environment variable.
 5. As roles, please select the `Salesforce Commerce API` role on the Salesforce B2C Commerce instance you want to test OCI against with.
-6. In the OpenID allowed scopes, add the Omnichannel Inventory scopes. The complete list is available [here](https://developer.commercecloud.com/s/article/CommerceAPI-AuthZ-Scope-Catalog).
+6. In the OpenID allowed scopes, add the Omnichannel Inventory scopes. The complete list is available [here](https://developer.salesforce.com/docs/commerce/commerce-api/guide/auth-z-scope-catalog.html).
 7. Select `client_secret_post` as Token Endpoint Auth Method.
 8. Select `JWT` as Access Token Format
 9. Click on save.
@@ -78,7 +78,7 @@ Also, another way to find this `instance_id` is to extract it from the Salesforc
 
 ## :information_source: Description
 
-This collection contains use-case based sub-collections. The collection is divided into three main components, `AVAILABILITY`, `IMPEX`, and `RESERVATIONS`, in order to reflect how the documentation on the [Salesforce Commerce Cloud Developer Center](https://developer.commercecloud.com/s/commerce-api-apis) is done.
+This collection contains use-case based sub-collections. The collection is divided into three main components, `AVAILABILITY`, `IMPEX`, and `RESERVATIONS`, in order to reflect how the documentation on the [Salesforce Developer Portal](https://developer.salesforce.com/docs/commerce/commerce-api/references) is done.
 
 Within these folders, you'll find a sub-collection per use case, which contains the list of endpoints which can be used to perform the desired operation and validate that the operation worked.
 
