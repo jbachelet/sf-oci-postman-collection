@@ -33,13 +33,13 @@ In order to generate it, please do the following steps:
 
 ### short_code
 
-The `short_code` environment variable is the Salesforce Commerce API short code tied to your realm. This value is available in the Business Manager of the instance on which you want to run Omnichannel Inventory.
+The `short_code` environment variable is the Salesforce Commerce API short code tied to your OCI setup. This value is available in the Salesforce Core org on which you want to run Omnichannel Inventory.
 In order to find the value, please do the following steps:
-1. Go to the Business Manager of the instance
-2. Go to the `Administration >  Site Development >  Salesforce Commerce API Settings` menu.
-3. On the page, you'll see the `Short code` label.
-4. If a `Request short code` button is present, this means no short code has been assigned to the realm yet. Please click on the button and wait until the short code is created.
-5. If you can directly see the short code value on the page, then use it as the `short_code` environment variable.
+1. Go to your Salesforce Core org.
+2. Click on the gear icon on the top left and go to the `Setup` menu
+3. Ensure that the `Omnichannel Inventory` toggle is `on` within the `Omnichannel Inventory` menu of the setup (use the Quick Find box to access to it.)
+4. If the setting is on, on the same page you'll find the `Base URL for Inventory API Calls`, please use the subdomain from this URL. For example if the URL is `https://US.api.commercecloud.salesforce.com`, then use `US`.
+5. If the setting is off, please switch it on, then reload the page, you'll see the `Base URL for Inventory API Calls` value.
 
 ### tenant_group_id
 
