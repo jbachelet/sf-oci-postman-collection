@@ -3,7 +3,8 @@
 		"_postman_id": "12d11c23-15ab-48ba-823f-039cd52a9417",
 		"name": "Salesforce OCI - Commerce APIs",
 		"description": "# Salesforce Omni Channel Inventory collection\n\nThis collection contains pre-defined use cases related to the Salesforce Omni Channel Inventory.\nThese use cases cover all the available endpoints from the API.\nMore infos in the [Salesforce Commerce Developer Center](https://developer.commercecloud.com/s/)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6732558"
 	},
 	"item": [
 		{
@@ -137,9 +138,12 @@
 											"",
 											"pm.test('Validate the body and save the values to the variables', () => {",
 											"    const data = pm.response.json();",
+											"    pm.expect(data.exportId).to.exist;",
+											"    pm.expect(data.exportId).to.be.a.string;",
 											"    pm.expect(data.exportStatusLink).to.exist;",
 											"    pm.expect(data.exportStatusLink).to.be.a.string;",
 											"",
+											"    pm.collectionVariables.set('_export_availability_records_per_location_group_id', data.exportId);",
 											"    pm.collectionVariables.set('_export_availability_records_per_location_group_status_link', data.exportStatusLink);",
 											"});"
 										],
@@ -401,6 +405,57 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Export Availability Records - Delete Export",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 204', () => {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/availability-records/exports/{{_export_availability_records_per_location_group_id}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"availability-records",
+										"exports",
+										"{{_export_availability_records_per_location_group_id}}"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"description": "# IMPEX - Export Availability Records for Location Group\n\n> Please allow some delays from the time you trigger the export and the time the export is finished, depending on the number of records to export.\n\nThis collection contains the endpoints that allow you to export the availability records from a location group.\nIt saves the `deltaToken` received from Salesforce OCI so that further `Get Availability Deltas` API requests will be based on this last exported state."
@@ -533,9 +588,12 @@
 											"",
 											"pm.test('Validate the body and save the values to the variables', () => {",
 											"    const data = pm.response.json();",
+											"    pm.expect(data.exportId).to.exist;",
+											"    pm.expect(data.exportId).to.be.a.string;",
 											"    pm.expect(data.exportStatusLink).to.exist;",
 											"    pm.expect(data.exportStatusLink).to.be.a.string;",
 											"",
+											"    pm.collectionVariables.set('_export_availability_records_per_location_id', data.exportId);",
 											"    pm.collectionVariables.set('_export_availability_records_per_location_status_link', data.exportStatusLink);",
 											"});"
 										],
@@ -797,6 +855,57 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Export Availability Records - Delete Export",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 204', () => {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/availability-records/exports/{{_export_availability_records_per_location_id}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"availability-records",
+										"exports",
+										"{{_export_availability_records_per_location_id}}"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"description": "# IMPEX - Export Availability Records for Location\n\n\n> Please allow some delays from the time you trigger the export and the time the export is finished, depending on the number of records to export.\n\nThis collection contains the endpoints that allow you to export the availability records from a location.\nIt saves the `deltaToken` received from Salesforce OCI so that further `Get Availability Deltas` API requests will be based on this last exported state."
@@ -875,7 +984,7 @@
 								"header": [
 									{
 										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
+										"value": "application/json"
 									}
 								],
 								"body": {
@@ -929,9 +1038,12 @@
 											"",
 											"pm.test('Validate the body and save the values to the variables', () => {",
 											"    const data = pm.response.json();",
+											"    pm.expect(data.exportId).to.exist;",
+											"    pm.expect(data.exportId).to.be.a.string;",
 											"    pm.expect(data.exportStatusLink).to.exist;",
 											"    pm.expect(data.exportStatusLink).to.be.a.string;",
 											"",
+											"    pm.collectionVariables.set('_export_location_graph_status_id', data.exportId);",
 											"    pm.collectionVariables.set('_export_location_graph_status_link', data.exportStatusLink);",
 											"});"
 										],
@@ -1121,9 +1233,60 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Export Location Graph - Delete Export",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 204', () => {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/location-graph/exports/{{_export_location_graph_status_id}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"location-graph",
+										"exports",
+										"{{_export_location_graph_status_id}}"
+									]
+								}
+							},
+							"response": []
 						}
 					],
-					"description": "# IMPEX - Export Location Graph\n\n\n> Please allow some delays from the time you trigger the export and the time the export is finished, depending on the size of the location graph.\n\nThis collection contains the endpoints that allow you to export the location graph from Salesforce OCI."
+					"description": "# IMPEX - Export Location Graph\n\n> Please allow some delays from the time you trigger the export and the time the export is finished, depending on the size of the location graph. \n  \n\nThis collection contains the endpoints that allow you to export the location graph from Salesforce OCI."
 				},
 				{
 					"name": "Import Inventory Records",
@@ -1317,11 +1480,14 @@
 											"",
 											"pm.test('Validate the body and save the values to the variables', () => {",
 											"    const data = pm.response.json();",
+											"    pm.expect(data.importId).to.exist;",
+											"    pm.expect(data.importId).to.be.a.string;",
 											"    pm.expect(data.importStatusLink).to.exist;",
 											"    pm.expect(data.importStatusLink).to.be.a.string;",
 											"    pm.expect(data.uploadLink).to.exist;",
 											"    pm.expect(data.uploadLink).to.be.a.string;",
 											"",
+											"    pm.collectionVariables.set('_import_availability_records_import_id', data.importId);",
 											"    pm.collectionVariables.set('_import_availability_records_status_link', data.importStatusLink);",
 											"    pm.collectionVariables.set('_import_availability_records_upload_link', data.uploadLink);",
 											"});"
@@ -1334,6 +1500,7 @@
 									"script": {
 										"exec": [
 											"// Clean up the variables",
+											"pm.collectionVariables.unset('_import_availability_records_import_id');",
 											"pm.collectionVariables.unset('_import_availability_records_status_link');",
 											"pm.collectionVariables.unset('_import_availability_records_upload_link');"
 										],
@@ -1417,17 +1584,14 @@
 										{
 											"key": "fileUpload",
 											"type": "file",
-											"src": "/Users/jbachelet/Downloads/Refarch.json.gz"
+											"src": "/Users/jbachelet/Downloads/1690381862678.json.gz"
 										}
 									]
 								},
 								"url": {
-									"raw": "{{api_url}}/{{_import_availability_records_upload_link}}",
+									"raw": "{{api_url}}{{_import_availability_records_upload_link}}",
 									"host": [
-										"{{api_url}}"
-									],
-									"path": [
-										"{{_import_availability_records_upload_link}}"
+										"{{api_url}}{{_import_availability_records_upload_link}}"
 									]
 								}
 							},
@@ -1494,12 +1658,9 @@
 									}
 								],
 								"url": {
-									"raw": "{{api_url}}/{{_import_availability_records_status_link}}",
+									"raw": "{{api_url}}{{_import_availability_records_status_link}}",
 									"host": [
-										"{{api_url}}"
-									],
-									"path": [
-										"{{_import_availability_records_status_link}}"
+										"{{api_url}}{{_import_availability_records_status_link}}"
 									]
 								}
 							},
@@ -1599,12 +1760,61 @@
 									}
 								],
 								"url": {
-									"raw": "{{api_url}}/{{_import_availability_records_status_report_link}}",
+									"raw": "{{api_url}}{{_import_availability_records_status_report_link}}",
+									"host": [
+										"{{api_url}}{{_import_availability_records_status_report_link}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Inventory import",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", () => {",
+											"    pm.response.to.have.status(204);",
+											"    pm.response.to.not.be.withBody;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/availability-records/imports/{{_import_availability_records_import_id}}",
 									"host": [
 										"{{api_url}}"
 									],
 									"path": [
-										"{{_import_availability_records_status_report_link}}"
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"availability-records",
+										"imports",
+										"{{_import_availability_records_import_id}}"
 									]
 								}
 							},
@@ -1614,7 +1824,770 @@
 					"description": "# IMPEX - Import Inventory Records\n\n> Please allow some delays from the time you upload the file and the time the import is completed, depending on the number of records to import.\n\nThis collection contains the endpoints that allow you to import the availability records within Salesforce OCI."
 				},
 				{
-					"name": "Export event logs",
+					"name": "Import Product Segmentations",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce Commerce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "{{client_id}}",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "{{client_password}}",
+											"type": "string"
+										},
+										{
+											"key": "saveHelperData",
+											"value": true,
+											"type": "boolean"
+										},
+										{
+											"key": "showPassword",
+											"value": true,
+											"type": "boolean"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "{{api_scopes}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://account.demandware.com/dw/oauth2/access_token",
+									"protocol": "https",
+									"host": [
+										"account",
+										"demandware",
+										"com"
+									],
+									"path": [
+										"dw",
+										"oauth2",
+										"access_token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import Product Segmentations - Submit Import",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body and save the values to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.importId).to.exist;",
+											"    pm.expect(data.importId).to.be.a.string;",
+											"    pm.expect(data.importStatusLink).to.exist;",
+											"    pm.expect(data.importStatusLink).to.be.a.string;",
+											"    pm.expect(data.uploadLink).to.exist;",
+											"    pm.expect(data.uploadLink).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_import_product_segmentations_import_id', data.importId);",
+											"    pm.collectionVariables.set('_import_product_segmentations_status_link', data.importStatusLink);",
+											"    pm.collectionVariables.set('_import_product_segmentations_upload_link', data.uploadLink);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_import_product_segmentations_import_id');",
+											"pm.collectionVariables.unset('_import_product_segmentations_status_link');",
+											"pm.collectionVariables.unset('_import_product_segmentations_upload_link');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"fileFormat\": \"{{impex_file_format}}\",\n  \"fileEncoding\": \"{{impex_file_encoding}}\",\n  \"fileHashType\": \"{{impex_file_hash_type}}\",\n  \"fileHash\": \"{{impex_file_hash}}\",\n  \"fileName\": \"{{impex_file_name}}\",\n  \"linkDuration\": {{impex_link_duration}}\n}"
+								},
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/product-segmentation/imports",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"product-segmentation",
+										"imports"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import Product Segmentations - Upload File",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "fileUpload",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{api_url}}{{_import_product_segmentations_upload_link}}",
+									"host": [
+										"{{api_url}}{{_import_product_segmentations_upload_link}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import Product Segmentations - Get Import Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body and save the values to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.import).to.exist;",
+											"    pm.expect(data.import).to.be.a('object');",
+											"    pm.expect(data.import.fullResults).to.exist;",
+											"    pm.expect(data.import.fullResults).to.be.a('object');",
+											"    pm.expect(data.import.fullResults.href).to.exist;",
+											"    pm.expect(data.import.fullResults.href).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_import_product_segmentations_status_report_link', data.import.fullResults.href);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_import_product_segmentations_status_report_link');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}{{_import_product_segmentations_status_link}}",
+									"host": [
+										"{{api_url}}{{_import_product_segmentations_status_link}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import Product Segmentations - Get Import Report",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}{{_import_product_segmentations_status_report_link}}",
+									"host": [
+										"{{api_url}}{{_import_product_segmentations_status_report_link}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product Segmentations",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", () => {",
+											"    pm.response.to.have.status(204);",
+											"    pm.response.to.not.be.withBody;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/availability-records/imports/{{_import_product_segmentations_import_id}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"availability-records",
+										"imports",
+										"{{_import_product_segmentations_import_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "# IMPEX - Import Product Segmentations\n\n> Please allow some delays from the time you upload the file and the time the import is completed, depending on the number of records to import. \n  \n\nThis collection contains the endpoints that allow you to import the availability records within Salesforce OCI."
+				},
+				{
+					"name": "Export Product Segmentations",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce Commerce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{client_password}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{client_id}}",
+											"type": "string"
+										},
+										{
+											"key": "saveHelperData",
+											"value": true,
+											"type": "boolean"
+										},
+										{
+											"key": "showPassword",
+											"value": true,
+											"type": "boolean"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "{{api_scopes}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://account.demandware.com/dw/oauth2/access_token",
+									"protocol": "https",
+									"host": [
+										"account",
+										"demandware",
+										"com"
+									],
+									"path": [
+										"dw",
+										"oauth2",
+										"access_token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export Product Segmentations - Trigger",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body and save the values to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.exportId).to.exist;",
+											"    pm.expect(data.exportId).to.be.a.string;",
+											"    pm.expect(data.exportStatusLink).to.exist;",
+											"    pm.expect(data.exportStatusLink).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_export_product_segmentations_status_id', data.exportId);",
+											"    pm.collectionVariables.set('_export_product_segmentations_status_link', data.exportStatusLink);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_export_product_segmentations_status_id');",
+											"pm.collectionVariables.unset('_export_product_segmentations_status_link');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/product-segmentation/exports",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"product-segmentation",
+										"exports"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export Product Segmentations - Get Link",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body and save the values to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.download).to.exist;",
+											"    pm.expect(data.download).to.be.a('object');",
+											"    pm.expect(data.download.downloadLink).to.exist;",
+											"    pm.expect(data.download.downloadLink).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_export_product_segmentations_download_link', data.download.downloadLink);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_export_product_segmentations_download_link');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/{{_export_product_segmentations_status_link}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"{{_export_product_segmentations_status_link}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export Product Segmentations - Download File",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/{{_export_product_segmentations_download_link}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"{{_export_product_segmentations_download_link}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export Product Segmentations - Delete Export",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 204', () => {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/product-segmentation/exports/{{_export_product_segmentations_status_id}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"impex",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"product-segmentation",
+										"exports",
+										"{{_export_product_segmentations_status_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "# IMPEX - Export Product Segmentations\n\n> Please allow some delays from the time you trigger the export and the time the export is finished, depending on the size of the location graph. \n  \n\nThis collection contains the endpoints that allow you to export the product segmentations from Salesforce OCI."
+				},
+				{
+					"name": "Export Event logs",
 					"item": [
 						{
 							"name": "Authentication against the Salesforce Commerce API",
@@ -1787,7 +2760,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"endsOn\": \"{{_event_log_export_end}}\",\n    \"locations\": [\n        \"{{location_id}}\"\n    ],\n    \"sku\": \"{{product_sku}}\",\n    \"groups\": [\n        \"{{location_group_id}}\"\n    ],\n    \"startsOn\": \"{{_event_log_export_start}}\"\n}"
+									"raw": "{\n    \"endsOn\": \"{{_event_log_export_end}}\",\n    \"locations\": [\n        \"store_inventory_Berluti_BF4\"\n    ],\n    \"sku\": \"182636\",\n    \"startsOn\": \"{{_event_log_export_start}}\"\n}"
 								},
 								"url": {
 									"raw": "{{api_url}}/inventory/impex/{{api_version}}/organizations/{{tenant_group_id}}/event-log/exports",
@@ -1881,7 +2854,7 @@
 							"response": []
 						},
 						{
-							"name": "Export Event Logs - Download activity logs",
+							"name": "Export Event Logs - Download event logs",
 							"event": [
 								{
 									"listen": "test",
@@ -1938,7 +2911,8 @@
 							},
 							"response": []
 						}
-					]
+					],
+					"description": "# IMPEX - Export Event Logs\n\n> Please allow some delays from the time you trigger the export and the time the export is finished, depending on the size of the location graph. \n  \n\nThis collection contains the endpoints that allow you to export the event logs from Salesforce OCI."
 				}
 			],
 			"description": "# Salesforce Omni Channel Inventory\n\n## Impex\n\nThis collection contains use cases related to the inventory import/export operations.\n\nMore infos [Salesforce Commerce Developer Center](https://developer.commercecloud.com/s/api-details/a003k00000Wa43kAAB/commerce-cloud-developer-centerinventoryimpex)"
@@ -2209,7 +3183,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"records\": [{\n\t\t\"sku\": \"{{product_sku}}\",\n\t\t\"location\": \"{{location_id}}\",\n\t\t\"id\": \"{{_batch_update_record_uuid}}\",\n\t\t\"externalRefId\": \"{{product_sku}}\",\n\t\t\"futureStock\": [{\n\t\t\t\"expectedDate\": \"{{_batch_update_record_future_date}}\",\n\t\t\t\"quantity\": {{_batch_update_record_new_future}}\n\t\t}],\n\t\t\"effectiveDate\": \"{{_batch_update_record_current_date}}\",\n\t\t\"onHand\": {{_batch_update_record_new_onHand}},\n        \"safetyStockCount\": {{_batch_update_record_new_safety}}\n\t}]\n}"
+									"raw": "{\n\t\"records\": [{\n\t\t\"sku\": \"{{product_sku}}\",\n\t\t\"location\": \"{{location_id}}\",\n\t\t\"id\": \"{{_batch_update_record_uuid}}\",\n\t\t\"externalRefId\": \"{{product_sku}}\",\n\t\t\"futureStock\": [{\n\t\t\t\"expectedDate\": \"{{_batch_update_record_future_date}}\",\n\t\t\t\"quantity\": 8\n\t\t}],\n\t\t\"effectiveDate\": \"{{_batch_update_record_current_date}}\",\n\t\t\"onHand\": {{_batch_update_record_new_onHand}},\n        \"safetyStockCount\": {{_batch_update_record_new_safety}}\n\t}]\n}"
 								},
 								"url": {
 									"raw": "{{api_url}}/inventory/availability/{{api_version}}/organizations/{{tenant_group_id}}/availability-records/actions/batch-update",
@@ -2708,7 +3682,7 @@
 							"response": []
 						}
 					],
-					"description": "# AVAILABILITY - Get Availability records\n\nThis collection contains the endpoints that allow you to get the availability records related to the given `{{product_sku}}` in the given location, or both a group and a location"
+					"description": "# AVAILABILITY - Replace Inventory Record within location\n\nThis collection contains the endpoints that allow you to replace the inventory records related to the given `{{product_sku}}` in the given location"
 				},
 				{
 					"name": "Update Inventory Record within location",
@@ -3025,6 +3999,354 @@
 											"    pm.expect(data.locations[0].id).to.be.eq(pm.environment.get('location_id'));",
 											"    pm.expect(data.locations[0].records).to.exist;",
 											"    pm.expect(data.locations[0].records).to.be.an('array');",
+											"    pm.expect(data.locations[0].records.length).to.be.eq(0);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locations\": [\n        \"{{location_id}}\"\n    ],\n    \"skus\": [\n        \"{{product_sku}}\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{api_url}}/inventory/availability/{{api_version}}/organizations/{{tenant_group_id}}/availability-records/actions/get-availability",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"availability",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "# AVAILABILITY - Update Inventory Record within location\n\nThis collection contains the endpoints that allow you to update the inventory records related to the given `{{product_sku}}` in the given location"
+				},
+				{
+					"name": "Delete Inventory Record within location",
+					"item": [
+						{
+							"name": "Authentication against the Salesforce Commerce API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the access token is found in the body and save it to the variables', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.token_type).to.exist;",
+											"    pm.expect(data.token_type).to.be.a.string;",
+											"    pm.expect(data.access_token).to.exist;",
+											"    pm.expect(data.access_token).to.be.a.string;",
+											"",
+											"    pm.collectionVariables.set('_authorization_key', `${data.token_type} ${data.access_token}`);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_authorization_key');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{client_password}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{client_id}}",
+											"type": "string"
+										},
+										{
+											"key": "saveHelperData",
+											"value": true,
+											"type": "boolean"
+										},
+										{
+											"key": "showPassword",
+											"value": true,
+											"type": "boolean"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "{{api_scopes}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://account.demandware.com/dw/oauth2/access_token",
+									"protocol": "https",
+									"host": [
+										"account",
+										"demandware",
+										"com"
+									],
+									"path": [
+										"dw",
+										"oauth2",
+										"access_token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability By Locations for the product we will update",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations.length).to.be.greaterThan(0);",
+											"    pm.expect(data.locations[0]).to.exist;",
+											"    pm.expect(data.locations[0]).to.be.an('object');",
+											"    pm.expect(data.locations[0].id).to.be.eql(pm.environment.get('location_id'));",
+											"    pm.expect(data.locations[0].records).to.exist;",
+											"    pm.expect(data.locations[0].records).to.be.an('array');",
+											"    pm.expect(data.locations[0].records.length).to.be.greaterThan(0);",
+											"    pm.expect(data.locations[0].records[0].sku).to.be.eql(pm.environment.get('product_sku'));",
+											"",
+											"    pm.collectionVariables.set('_update_inventory_record_safety', data.locations[0].records[0].safetyStockCount);",
+											"    pm.collectionVariables.set('_update_inventory_record_onHand', data.locations[0].records[0].onHand);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Clean up the variables",
+											"pm.collectionVariables.unset('_update_inventory_record_safety');",
+											"pm.collectionVariables.unset('_update_inventory_record_onHand');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locations\": [\n        \"{{location_id}}\"\n    ],\n    \"skus\": [\n        \"{{product_sku}}\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{api_url}}/inventory/availability/{{api_version}}/organizations/{{tenant_group_id}}/availability-records/actions/get-availability",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"availability",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"availability-records",
+										"actions",
+										"get-availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Inventory Record within Location",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", () => {",
+											"    pm.response.to.have.status(204);",
+											"    pm.response.to.not.be.withBody;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set('_delete_inventory_record_request_id', uuidv4());"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{_authorization_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/inventory/availability/{{api_version}}/organizations/{{tenant_group_id}}/locations/{{location_id}}/availability-records/skus/{{product_sku}}/{{_delete_inventory_record_request_id}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"inventory",
+										"availability",
+										"{{api_version}}",
+										"organizations",
+										"{{tenant_group_id}}",
+										"locations",
+										"{{location_id}}",
+										"availability-records",
+										"skus",
+										"{{product_sku}}",
+										"{{_delete_inventory_record_request_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Optional) Get Availability By Locations for the updated product",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid and has a JSON body', () => {",
+											"     pm.response.to.be.ok;",
+											"     pm.response.to.be.withBody;",
+											"     pm.response.to.be.json;",
+											"});",
+											"",
+											"pm.test('Validate the body', () => {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data.locations).to.exist;",
+											"    pm.expect(data.locations).to.be.an('array');",
+											"    pm.expect(data.locations.length).to.be.greaterThan(0);",
+											"    pm.expect(data.locations[0]).to.exist;",
+											"    pm.expect(data.locations[0]).to.be.an('object');",
+											"    pm.expect(data.locations[0].id).to.be.eq(pm.environment.get('location_id'));",
+											"    pm.expect(data.locations[0].records).to.exist;",
+											"    pm.expect(data.locations[0].records).to.be.an('array');",
 											"    pm.expect(data.locations[0].records.length).to.be.greaterThan(0);",
 											"    pm.expect(data.locations[0].records[0].sku).to.be.eq(pm.environment.get('product_sku'));",
 											"",
@@ -3092,7 +4414,7 @@
 							"response": []
 						}
 					],
-					"description": "# AVAILABILITY - Get Availability records\n\nThis collection contains the endpoints that allow you to get the availability records related to the given `{{product_sku}}` in the given location, or both a group and a location"
+					"description": "# AVAILABILITY - Delete Inventory Record within location\n\nThis collection contains the endpoints that allow you to delete the inventory records related to the given `{{product_sku}}` in the given location"
 				},
 				{
 					"name": "Get Availability records by location group",
@@ -7044,6 +8366,177 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "_import_records_import_list_length",
+			"value": ""
+		},
+		{
+			"key": "_reservation_id",
+			"value": ""
+		},
+		{
+			"key": "_transfer_unique_request_id",
+			"value": ""
+		},
+		{
+			"key": "_fulfillment_unique_request_id",
+			"value": ""
+		},
+		{
+			"key": "_fulfillment_id",
+			"value": ""
+		},
+		{
+			"key": "_export_availability_records_per_location_group_status_link",
+			"value": ""
+		},
+		{
+			"key": "_release_unique_request_id",
+			"value": ""
+		},
+		{
+			"key": "_location_availability_before_reservation_atf",
+			"value": ""
+		},
+		{
+			"key": "_location_availability_before_reservation_ato",
+			"value": ""
+		},
+		{
+			"key": "_location_availability_before_reservation_reserved",
+			"value": ""
+		},
+		{
+			"key": "_location_availability_before_reservation_onHand",
+			"value": ""
+		},
+		{
+			"key": "_location_group_availability_before_reservation_atf",
+			"value": ""
+		},
+		{
+			"key": "_location_group_availability_before_reservation_ato",
+			"value": ""
+		},
+		{
+			"key": "_location_group_availability_before_reservation_reserved",
+			"value": ""
+		},
+		{
+			"key": "_location_group_availability_before_reservation_onHand",
+			"value": ""
+		},
+		{
+			"key": "_event_log_export_end",
+			"value": ""
+		},
+		{
+			"key": "_event_log_export_start",
+			"value": ""
+		},
+		{
+			"key": "__export_event_log_activity_link",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_safety",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_onHand",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_request_id",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_new_future",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_new_safety",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_new_onHand",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_current_date",
+			"value": ""
+		},
+		{
+			"key": "_update_inventory_record_future_date",
+			"value": ""
+		},
+		{
+			"key": "_export_location_graph_download_link",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_uuid",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_new_future",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_new_safety",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_new_onHand",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_current_date",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_future_date",
+			"value": ""
+		},
+		{
+			"key": "_authorization_key",
+			"value": ""
+		},
+		{
+			"key": "_import_availability_records_import_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "_import_availability_records_status_report_link",
+			"value": ""
+		},
+		{
+			"key": "_export_event_log_status_link",
+			"value": ""
+		},
+		{
+			"key": "_export_event_log_activity_link",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_safety",
+			"value": ""
+		},
+		{
+			"key": "_batch_update_record_onHand",
+			"value": ""
+		},
+		{
+			"key": "_import_availability_records_status_link",
+			"value": ""
+		},
+		{
+			"key": "_import_availability_records_upload_link",
+			"value": ""
 		}
 	]
 }
